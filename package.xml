@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<package>
+  <name>apriltag_map_service</name>
+  <version>0.0.1</version>
+  <description>
+    Takes apriltag3_ros output and compares to a dictionary for camera spatial placement in a map.
+  </description>
+
+  <maintainer email="perseghetti@gmail.com">Benjamin Perseghetti</maintainer>
+  <author email="perseghetti@gmail.com">Benjamin Persegehtti</author>
+
+  <license>BSD</license>
+
+  <url type="website">http://www.ros.org/wiki/apriltag_map_service</url>
+  <url type="bugtracker">https://github.com/rudislabs/apriltag_map_service/issues</url>
+  <url type="repository">https://github.com/rudislabs/apriltag_map_service</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>apriltag3</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>tf2_ros</build_depend>
+  <build_depend>tf2_eigen</build_depend>
+  <build_depend>cmake_modules</build_depend>
+  <build_depend>visualization_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  
+  <run_depend>tf2_ros</run_depend>
+  <run_depend>tf2_eigen</run_depend>
+  <run_depend>apriltag3_ros</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>visualization_msgs</run_depend>
+  <run_depend>nav_msgs</run_depend>
+
+  <export>
+  </export>
+</package>
