@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find apriltag3_ros)/launch/launch_uvc_cam.launch"></include>
+
+  <node name="pose_lookup_for_map" output="screen" pkg="apriltag_map_service" type="pose_lookup_for_map.py" respawn="true" respawn_delay="5">
+    <param name="~apriltag_map_json" value="testaprilpose.json"/>
+  </node>
+
+</launch>
