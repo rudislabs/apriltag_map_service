@@ -72,21 +72,12 @@ def easyDEG_RPY(RPY):
         Rdeg, Pdeg, Ydeg = [(180/m.pi)*RPY[3],(180/m.pi)*RPY[4],(180/m.pi)*RPY[5]]
     elif len(RPY) == 3:
         Rdeg, Pdeg, Ydeg = [(180/m.pi)*RPY[0],(180/m.pi)*RPY[1],(180/m.pi)*RPY[2]]
-    """print([Rdeg, Pdeg, Ydeg])
-                if Rdeg > 180:
-                    Rdeg = Rdeg-360
-                if Rdeg <= -180:
-                    Rdeg = Rdeg+360
-                    
-                if Pdeg > 180:
-                    Pdeg = Pdeg-360
-                if Pdeg <= -180:
-                    Pdeg = Pdeg+360
-                    
-                if Ydeg > 180:
-                    Ydeg = Ydeg-360
-                if Ydeg <= -180:
-                    Ydeg = Ydeg+360"""
+    if True:
+        if Rdeg > 0:
+            Rdeg_mod = Rdeg-180
+        elif Rdeg < 0:
+            Rdeg_mod = Rdeg+180
+    Rdeg = Rdeg_mod
     return([Rdeg, Pdeg, Ydeg])
     
 def qmult(q1, q0):
@@ -141,15 +132,15 @@ class Map_Locate(object):
         aptg_rd_pos = [atrd.position.x, atrd.position.y, atrd.position.z, atrd.orientation.x ,atrd.orientation.y, atrd.orientation.z, atrd.orientation.w]
         #print("Found Apriltag Label Map Location: {}".format(self.AprilMapPoseDict[apriltag_key]))
         if self.map_coord == 'standard':
-            ApriltagReadMapTransM = [aptg_rd_pos[0],-aptg_rd_pos[2],aptg_rd_pos[1]]
+            ApriltagReadMapTransM = [-aptg_rd_pos[0],-aptg_rd_pos[2],aptg_rd_pos[1]]
             ApriltagReadRotRad = toEA_RPY(aptg_rd_pos[3:])
             ApriltagReadRotDeg = easyDEG_RPY(ApriltagReadRotRad)
             ApriltagReadMapRotRad = [ApriltagReadRotRad[0], -ApriltagReadRotRad[2], ApriltagReadRotRad[1]]
             ApriltagReadMapRotDeg = easyDEG_RPY(ApriltagReadMapRotRad)
             ApriltagReadMapRotQt = toQt_xyzw(ApriltagReadMapRotRad)
 
-        print("Apriltag Read Pose no Map Coord: {},{}".format(aptg_rd_pos[0:3], ApriltagReadRotDeg))
-        print("Apriltag Read Pose Map Coord: {},{}".format(ApriltagReadMapTransM, ApriltagReadMapRotDeg))
+        #print("Apriltag Read Pose no Map Coord: {},{}".format(aptg_rd_pos[0:3], ApriltagReadRotDeg))
+        print("Apriltag Read Pose Map Coord: [{:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}]".format(ApriltagReadMapTransM[0],ApriltagReadMapTransM[1],ApriltagReadMapTransM[2],ApriltagReadMapRotDeg[0],ApriltagReadMapRotDeg[1],ApriltagReadMapRotDeg[2]))
         aptg_map_msg = geometry_msgs.msg.Pose()
         aptg_map_msg.position.x = ApriltagReadMapTransM[0]
         aptg_map_msg.position.y = ApriltagReadMapTransM[1]
