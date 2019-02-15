@@ -17,6 +17,7 @@ import apriltag3_ros.msg
 import apriltag_map_service.msg
 import numpy as np
 import math as m
+import geometry_msgs.msg
 
 roslib.load_manifest('apriltag_map_service')
 
@@ -138,7 +139,7 @@ class Map_Locate(object):
     def apriltag_ID_to_map(self, atrd, apriltag_id):
         apriltag_key = "TAG_{}".format(apriltag_id)
         aptg_rd_pos = [atrd.position.x, atrd.position.y, atrd.position.z, atrd.orientation.x ,atrd.orientation.y, atrd.orientation.z, atrd.orientation.w]
-        print("Found Apriltag Label Map Location: {}".format(self.AprilMapPoseDict[apriltag_key]))
+        #print("Found Apriltag Label Map Location: {}".format(self.AprilMapPoseDict[apriltag_key]))
         if self.map_coord == 'standard':
             ApriltagReadMapTransM = [aptg_rd_pos[0],-aptg_rd_pos[2],aptg_rd_pos[1]]
             ApriltagReadRotRad = toEA_RPY(aptg_rd_pos[3:])
