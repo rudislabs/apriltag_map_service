@@ -72,6 +72,7 @@ def easyDEG_RPY(RPY):
         Rdeg, Pdeg, Ydeg = [(180/m.pi)*RPY[3],(180/m.pi)*RPY[4],(180/m.pi)*RPY[5]]
     elif len(RPY) == 3:
         Rdeg, Pdeg, Ydeg = [(180/m.pi)*RPY[0],(180/m.pi)*RPY[1],(180/m.pi)*RPY[2]]
+    Rdeg_mod = 0.0
     if True:
         if Rdeg > 0:
             Rdeg_mod = Rdeg-180
@@ -135,7 +136,7 @@ class Map_Locate(object):
             ApriltagReadMapTransM = [-aptg_rd_pos[0],-aptg_rd_pos[2],aptg_rd_pos[1]]
             ApriltagReadRotRad = toEA_RPY(aptg_rd_pos[3:])
             ApriltagReadRotDeg = easyDEG_RPY(ApriltagReadRotRad)
-            ApriltagReadMapRotRad = [ApriltagReadRotRad[0], -ApriltagReadRotRad[2], ApriltagReadRotRad[1]]
+            ApriltagReadMapRotRad = [-ApriltagReadRotRad[0], -ApriltagReadRotRad[2], ApriltagReadRotRad[1]]
             ApriltagReadMapRotDeg = easyDEG_RPY(ApriltagReadMapRotRad)
             ApriltagReadMapRotQt = toQt_xyzw(ApriltagReadMapRotRad)
 
