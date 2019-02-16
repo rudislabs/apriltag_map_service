@@ -4,6 +4,8 @@
 
   <node name="pose_lookup_for_map" output="screen" pkg="apriltag_map_service" type="pose_lookup_for_map.py" respawn="true" respawn_delay="5">
     <param name="~apriltag_map_json" value="testaprilpose.json"/>
+    <param name="~debug_ApriltagMapPoseDeg" value="true"/>
+    <param name="~camera_to_device_pose" value="0.02,-0.11,-0.05"/><!--Measurment starting from the imager measured to desired location on device in Standard Coordinates, were Y points forward out of imager, X is to right when looking in same direction of imager and Z is up -->
   </node>
 
 </launch>
