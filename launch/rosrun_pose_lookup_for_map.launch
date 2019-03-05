@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <launch>
   <node name="pose_lookup_for_map" output="screen" pkg="apriltag_map_service" type="pose_lookup_for_map.py" respawn="true" respawn_delay="5">
     <param name="~apriltag_map_json" value="testaprilpose.json"/>
