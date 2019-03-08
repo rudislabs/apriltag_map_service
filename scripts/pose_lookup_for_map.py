@@ -109,11 +109,11 @@ class Map_Locate(object):
 
         apriltag_map_json_path = os.path.join(self.pkg_path, 'ipython', apriltag_map_file)
         with open(apriltag_map_json_path, 'r') as atmpf:
-            self.AprilMapPoseDict = json.load(atmpf)
+            self.AprilTagMapPoseDict = json.load(atmpf)
 
         # publishers
-        self.AprilMapPose_pub = rospy.Publisher(
-            "AprilMapPose", apriltag_map_service.msg.AprilMapPose, queue_size=0)
+        self.AprilTagMapPose_pub = rospy.Publisher(
+            "AprilTagMapPose", apriltag_map_service.msg.AprilTagMapPose, queue_size=0)
         # subscriptions
         self.apriltag3_ros_sub = rospy.Subscriber(
             "AprilTagDetectionArray", apriltag3_ros.msg.AprilTagDetectionArray, self.callback)
@@ -121,20 +121,20 @@ class Map_Locate(object):
     def callback(self, data):
         
         apriltag_detect = data
-        AprilMapPose_msg = apriltag_map_service.msg.AprilMapPose()
+        AprilTagMapPose_msg = apriltag_map_service.msg.AprilTagMapPose()
         #print(apriltag_detect.detections[0].pose.pose.pose.position)
         for tgs in range(0,len(apriltag_detect.detections)):
             apriltag_found = apriltag_detect.detections[tgs]
-            AprilMapPose_msg.map_lookup_pose = self.apriltag_ID_to_map(apriltag_found.pose.pose.pose, apriltag_found.id[0])
+            AprilTagMapPose_msg.map_lookup_pose = self.apriltag_ID_to_map(apriltag_found.pose.pose.pose, apriltag_found.id[0])
 
-            #AprilMapPose_msg.header.stamp = apriltag_found.header.stamp
-            AprilMapPose_msg.apriltag_id = apriltag_found.id[0]
-            self.AprilMapPose_pub.publish(AprilMapPose_msg)
+            #AprilTagMapPose_msg.header.stamp = apriltag_found.header.stamp
+            AprilTagMapPose_msg.apriltag_id = apriltag_found.id[0]
+            self.AprilTagMapPose_pub.publish(AprilTagMapPose_msg)
 
     def apriltag_ID_to_map(self, atrd, apriltag_id):
         apriltag_key = "TAG_{}".format(apriltag_id)
         aptg_rd_pos = [atrd.position.x, atrd.position.y, atrd.position.z, atrd.orientation.x ,atrd.orientation.y, atrd.orientation.z, atrd.orientation.w]
-        AprilMapLabel = self.AprilMapPoseDict[apriltag_key]
+        AprilMapLabel = self.AprilTagMapPoseDict[apriltag_key]
         if self.map_coord == 'standard':
             ApriltagReadMapTransM = [-aptg_rd_pos[0]+self.cam_to_dev[0],-aptg_rd_pos[2]+self.cam_to_dev[1],aptg_rd_pos[1]+self.cam_to_dev[2]]
             ApriltagReadRotRad = toEA_RPY(aptg_rd_pos[3:])
@@ -142,25 +142,25 @@ class Map_Locate(object):
             ApriltagReadMapRotRad = [-ApriltagReadRotRad[0], -ApriltagReadRotRad[2], ApriltagReadRotRad[1]]
             ApriltagReadMapRotDeg = easyDEG_RPY(ApriltagReadMapRotRad, False)
             ApriltagReadMapRotQt = toQt_xyzw(ApriltagReadMapRotRad)
-            ApriltagMapPoseRad = [AprilMapLabel[0]-(m.sin(AprilMapLabel[5])*ApriltagReadMapTransM[0]), 
+            AprilTagMapPoseRad = [AprilMapLabel[0]-(m.sin(AprilMapLabel[5])*ApriltagReadMapTransM[0]), 
                                 AprilMapLabel[1]-(m.sin(AprilMapLabel[5])*ApriltagReadMapTransM[1]), 
                                 AprilMapLabel[2]+ApriltagReadMapTransM[2], 
                                 ApriltagReadMapRotRad[0], ApriltagReadMapRotRad[1], ApriltagReadMapRotRad[2]+(m.pi/2.0+AprilMapLabel[5])]
-            ApriltagMapRotDeg = easyDEG_RPY(ApriltagMapPoseRad, False)
-            ApriltagMapRotQt = toQt_xyzw(ApriltagMapPoseRad)
-            ApriltagMapPoseQt = [ApriltagMapPoseRad[0],ApriltagMapPoseRad[1],ApriltagMapPoseRad[2],ApriltagMapRotQt[0],ApriltagMapRotQt[1],ApriltagMapRotQt[2],ApriltagMapRotQt[3]]
+            ApriltagMapRotDeg = easyDEG_RPY(AprilTagMapPoseRad, False)
+            ApriltagMapRotQt = toQt_xyzw(AprilTagMapPoseRad)
+            AprilTagMapPoseQt = [AprilTagMapPoseRad[0],AprilTagMapPoseRad[1],AprilTagMapPoseRad[2],ApriltagMapRotQt[0],ApriltagMapRotQt[1],ApriltagMapRotQt[2],ApriltagMapRotQt[3]]
         
         if self.debug_PoseDeg:
-        	print("Apriltag Map Pose Deg: [X:{:.2f} m, Y:{:.2f} m, Z:{:.2f} m, R:{:.2f} Deg, P:{:.3f} Deg, Y:{:.3f} Deg]".format(ApriltagMapPoseRad[0],ApriltagMapPoseRad[1],ApriltagMapPoseRad[2],ApriltagMapRotDeg[0],ApriltagMapRotDeg[1],ApriltagMapRotDeg[2]))
+        	print("Apriltag Map Pose Deg: [X:{:.2f} m, Y:{:.2f} m, Z:{:.2f} m, R:{:.2f} Deg, P:{:.3f} Deg, Y:{:.3f} Deg]".format(AprilTagMapPoseRad[0],AprilTagMapPoseRad[1],AprilTagMapPoseRad[2],ApriltagMapRotDeg[0],ApriltagMapRotDeg[1],ApriltagMapRotDeg[2]))
         
         aptg_map_msg = geometry_msgs.msg.Pose()
-        aptg_map_msg.position.x = ApriltagMapPoseQt[0]
-        aptg_map_msg.position.y = ApriltagMapPoseQt[1]
-        aptg_map_msg.position.z = ApriltagMapPoseQt[2]
-        aptg_map_msg.orientation.x = ApriltagMapPoseQt[3]
-        aptg_map_msg.orientation.y = ApriltagMapPoseQt[4]
-        aptg_map_msg.orientation.z = ApriltagMapPoseQt[5]
-        aptg_map_msg.orientation.w = ApriltagMapPoseQt[6]
+        aptg_map_msg.position.x = AprilTagMapPoseQt[0]
+        aptg_map_msg.position.y = AprilTagMapPoseQt[1]
+        aptg_map_msg.position.z = AprilTagMapPoseQt[2]
+        aptg_map_msg.orientation.x = AprilTagMapPoseQt[3]
+        aptg_map_msg.orientation.y = AprilTagMapPoseQt[4]
+        aptg_map_msg.orientation.z = AprilTagMapPoseQt[5]
+        aptg_map_msg.orientation.w = AprilTagMapPoseQt[6]
         return aptg_map_msg
 
 def main(args):
