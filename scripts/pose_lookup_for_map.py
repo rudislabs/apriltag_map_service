@@ -138,8 +138,8 @@ class Map_Locate(object):
         if self.map_coord == 'standard':
             ApriltagReadMapTransM = [-aptg_rd_pos[0]+self.cam_to_dev[0],-aptg_rd_pos[2]+self.cam_to_dev[1],aptg_rd_pos[1]+self.cam_to_dev[2]]
             ApriltagReadRotRad = toEA_RPY(aptg_rd_pos[3:])
-            ApriltagReadRotDeg = easyDEG_RPY(ApriltagReadRotRad, True)
-            ApriltagReadMapRotRad = [-ApriltagReadRotRad[0], -ApriltagReadRotRad[2], ApriltagReadRotRad[1]]
+            ApriltagReadMapRotRad = [-ApriltagReadRotRad[0]+m.pi, -ApriltagReadRotRad[2], ApriltagReadRotRad[1]]
+            print(ApriltagReadMapRotRad)
             ApriltagReadMapRotDeg = easyDEG_RPY(ApriltagReadMapRotRad, False)
             ApriltagReadMapRotQt = toQt_xyzw(ApriltagReadMapRotRad)
             AprilTagMapPoseRad = [AprilMapLabel[0]-(m.sin(AprilMapLabel[5])*ApriltagReadMapTransM[0]), 
@@ -150,7 +150,8 @@ class Map_Locate(object):
             ApriltagMapRotQt = toQt_xyzw(AprilTagMapPoseRad)
             AprilTagMapPoseQt = [AprilTagMapPoseRad[0],AprilTagMapPoseRad[1],AprilTagMapPoseRad[2],ApriltagMapRotQt[0],ApriltagMapRotQt[1],ApriltagMapRotQt[2],ApriltagMapRotQt[3]]
         
-        if self.debug_PoseDeg:
+        #if self.debug_PoseDeg:
+        if True:
         	print("Apriltag Map Pose Deg: [X:{:.2f} m, Y:{:.2f} m, Z:{:.2f} m, R:{:.2f} Deg, P:{:.3f} Deg, Y:{:.3f} Deg]".format(AprilTagMapPoseRad[0],AprilTagMapPoseRad[1],AprilTagMapPoseRad[2],ApriltagMapRotDeg[0],ApriltagMapRotDeg[1],ApriltagMapRotDeg[2]))
         
         aptg_map_msg = geometry_msgs.msg.Pose()
