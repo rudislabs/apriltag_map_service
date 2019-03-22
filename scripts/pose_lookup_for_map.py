@@ -98,7 +98,7 @@ class Map_Locate(object):
         apriltag_map_file = rospy.get_param("~apriltag_map_json", 'testaprilpose.json')
         #Camera is in FRD from apriltag3_ros, where Z is forward, X is right, Y is down
         #But we pull in device pose update in map pose where Y is forward, X is right, Z is up (standard coordinates)
-        self.cam_to_dev = np.fromstring(rospy.get_param("~camera_to_device_poser","0.0,0.0,0.0"), sep=',').astype(float)
+        self.cam_to_dev = np.fromstring(rospy.get_param("~camera_to_device_pose","0.0,0.0,0.0"), sep=',').astype(float)
         #map is assumed to be in standard coord, but using this any coord system can be implemented **TODO**
         self.map_coord = rospy.get_param("~map_coord_system",'standard')
         
@@ -139,20 +139,28 @@ class Map_Locate(object):
             ApriltagReadMapTransM = [-aptg_rd_pos[0]+self.cam_to_dev[0],-aptg_rd_pos[2]+self.cam_to_dev[1],aptg_rd_pos[1]+self.cam_to_dev[2]]
             ApriltagReadRotRad = toEA_RPY(aptg_rd_pos[3:])
             ApriltagReadMapRotRad = [-ApriltagReadRotRad[0]+m.pi, -ApriltagReadRotRad[2], ApriltagReadRotRad[1]]
-            print(ApriltagReadMapRotRad)
             ApriltagReadMapRotDeg = easyDEG_RPY(ApriltagReadMapRotRad, False)
             ApriltagReadMapRotQt = toQt_xyzw(ApriltagReadMapRotRad)
             AprilTagMapPoseRad = [AprilMapLabel[0]-(m.sin(AprilMapLabel[5])*ApriltagReadMapTransM[0]), 
                                 AprilMapLabel[1]-(m.sin(AprilMapLabel[5])*ApriltagReadMapTransM[1]), 
                                 AprilMapLabel[2]+ApriltagReadMapTransM[2], 
-                                ApriltagReadMapRotRad[0], ApriltagReadMapRotRad[1], ApriltagReadMapRotRad[2]+(m.pi/2.0+AprilMapLabel[5])]
+                                ApriltagReadMapRotRad[0], 
+                                ApriltagReadMapRotRad[1], 
+                                ApriltagReadMapRotRad[2]+(m.pi/2.0+AprilMapLabel[5])]
             ApriltagMapRotDeg = easyDEG_RPY(AprilTagMapPoseRad, False)
             ApriltagMapRotQt = toQt_xyzw(AprilTagMapPoseRad)
-            AprilTagMapPoseQt = [AprilTagMapPoseRad[0],AprilTagMapPoseRad[1],AprilTagMapPoseRad[2],ApriltagMapRotQt[0],ApriltagMapRotQt[1],ApriltagMapRotQt[2],ApriltagMapRotQt[3]]
+            AprilTagMapPoseQt = [AprilTagMapPoseRad[0],
+                                AprilTagMapPoseRad[1],
+                                AprilTagMapPoseRad[2],
+                                ApriltagMapRotQt[0],
+                                ApriltagMapRotQt[1],
+                                ApriltagMapRotQt[2],
+                                ApriltagMapRotQt[3]]
         
-        #if self.debug_PoseDeg:
-        if True:
-        	print("Apriltag Map Pose Deg: [X:{:.2f} m, Y:{:.2f} m, Z:{:.2f} m, R:{:.2f} Deg, P:{:.3f} Deg, Y:{:.3f} Deg]".format(AprilTagMapPoseRad[0],AprilTagMapPoseRad[1],AprilTagMapPoseRad[2],ApriltagMapRotDeg[0],ApriltagMapRotDeg[1],ApriltagMapRotDeg[2]))
+        if self.debug_PoseDeg:
+        	print("Apriltag Map Pose Deg: [X:{:.2f} m, Y:{:.2f} m, Z:{:.2f} m, R:{:.2f} Deg, P:{:.3f} Deg, Y:{:.3f} Deg]".format(AprilTagMapPoseRad[0],
+        		AprilTagMapPoseRad[1],AprilTagMapPoseRad[2],
+        		ApriltagMapRotDeg[0],ApriltagMapRotDeg[1],ApriltagMapRotDeg[2]))
         
         aptg_map_msg = geometry_msgs.msg.Pose()
         aptg_map_msg.position.x = AprilTagMapPoseQt[0]
